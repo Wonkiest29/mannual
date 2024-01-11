@@ -1,22 +1,21 @@
 ## Ключ SSH
-Використання SSH-ключів забезпечує кращий рівень безпеки, ніж авторизація за допомогою паролів:
+Using SSH keys provides a better level of security than authentication with passwords:
 
-Надійніше шифрування: SSH-ключі використовують дуже стійкі алгоритми шифрування, такі як RSA або ECDSA, що забезпечує високий рівень захисту.
+Stronger encryption: SSH keys use very strong encryption algorithms such as RSA or ECDSA, which provides a high level of protection.
 
-Відсутність передачі паролів: При авторизації за допомогою ключів не відбувається передача паролів через мережу. Це унеможливлює перехоплення або вгадування пароля під час його передачі мережею.
+No transmission of passwords: During authorization using keys, there is no transmission of passwords over the network. This makes it impossible for the password to be intercepted or guessed while it is being transmitted over the network.
 
-Безпечне зберігання ключів: Закритий ключ залишається з вами та вашим пристроєм, тому навіть якщо публічний ключ буде втрачено, безпека не буде порушена, якщо зловмисник не отримає доступ до закритого ключа.
+Secure key storage: The private key stays with you and your device, so even if the public key is lost, security will not be compromised unless an attacker gains access to the private key.
 
-Зручність та автоматизація: SSH-ключі дозволяють здійснювати автоматичну авторизацію без введення пароля, що робить їх зручними для використання в автоматизованих процесах, таких як сценарії або резервне копіювання.
+Convenience and automation: SSH keys allow automatic authorization without entering a password, making them convenient for use in automated processes such as scripting or backups.
 
-Складність підбору ключа: Стандартна довжина ключа (наприклад, 2048 біт для RSA) робить злам SSH-ключів методом грубої сили практично неможливим.
+Complexity of key selection: The standard key length (for example, 2048 bits for RSA) makes brute force cracking of SSH keys almost impossible.
 
-Загалом, використання SSH-ключів є важливою складовою безпеки системи, оскільки вони забезпечують високий рівень безпеки та зручності при авторизації на серверах.
-
+In general, the use of SSH keys is an important component of system security, as they provide a high level of security and convenience when logging in to servers.
 ##
 
 # Крок 1: Згенеруйте SSH-ключі:
-Команда ssh-keygen -t rsa генерує ключі без пароля для безпечного доступу до сервера.
+The ssh-keygen -t rsa command generates keys without a password for secure access to the server.
 ``````
 ssh-keygen -t rsa
 ``````
@@ -24,7 +23,7 @@ ssh-keygen -t rsa
 
 # Крок 2: Відповіді при генерації ключів:
 
-Після запуску команди з'явиться наступне вікно:
+After running the command, the following window will appear:
 ``````
 Generating public/private rsa key pair.
 Enter file in which to save the key (/home/username/.ssh/id_rsa):
@@ -52,81 +51,63 @@ The key's randomart image is:
 
 # Крок 3: Додайте публічний ключ на сервер
 
-У Windows:
-"Ваш відкритий ключ збережено у C:\Users\username.ssh\id_rsa.pub".
+On Windows:
+"Your public key is saved in C:\Users\username.ssh\id_rsa.pub."
 
-У Linux:
+In Linux:
 "/home/username/.ssh/id_rsa.pub"
 
-На сервері:
-Для вашого користувача:
+On the server:
+For your user:
 ``````
 nano ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
 ``````
-На root:
+On root:
 ``````
 nano /root/.ssh/authorized_keys
 chmod 600 /root/.ssh/authorized_keys
 ``````
 
-##
-
-# Щоб вимкнути автентифікацію за допомогою пароля, внесіть наступні зміни до файлу на сервері:
-Перейдіть до файлу конфігурації SSH на сервері:
-```
-/etc/ssh/sshd_config
-```
-Змініть значення параметра ````PasswordAuthentication no````.
-Перезапустіть службу SSH, щоб застосувати зміни: sudo systemctl restart sshd (для систем на основі systemd).
-
-Це вимкне автентифікацію за допомогою пароля через SSH, дозволяючи використовувати лише ключі SSH для входу на сервер.
-
-## Підключення по SSH
-
-SSH (Secure SHell) - це мережевий протокол прикладного рівня, призначений для безпечного віддаленого доступу до UNIX-систем. Цей протокол ефективний тим, що шифрує всю інформацію, яка передається по мережі. За замовчуванням використовується порт 22. В основному використовується для віддаленого управління даними користувача на сервері, запуску сервісних команд, роботи в консольному режимі з базами даних.
-
-##
-
-Для SSH-підключення можна використовувати команду
+For SSH connection, you can use the command
 ```
 ssh user@host
 ```
-user - користувач, до якого ssh буде підключатися до машини
+user - the user to which ssh will connect to the machine
 
-host - це IP-адреса або домен для підключення до машини
+host is the IP address or domain to connect to the machine
 
 ##
 
-Коротко про те, як підключитися користувач може бути встановлений як root, але якщо у вас чиста машина, вам потрібно включити його в /etc/ssh/sshd_config.
-Ви можете використовувати nano, але також можете використовувати vi або щось інше, тому я навів приклад:
+Briefly on how to connect, the user can be set as root, but if you have a clean machine, you need to include it in /etc/ssh/sshd_config.
+You can use nano, but you can also use vi or something else, so I gave an example:
 ```
 nano /etc/sshd_config
 ```
 ``````
 vi /etc/sshd_config
 ``````
-Коли ми перейшли до файлу sshd_config, нам потрібен наступний рядок
+When we got to the sshd_config file, we need the following line
 ```
 #PermitRootLogin
 ```
-Нам потрібно видалити #, тому ми повинні бути в змозі зробити це
+We need to remove the # so we should be able to do that
 ```
 PermitRootLogin
 ```
-Тепер нам потрібно поставити "yes".
+Now we need to put "yes".
 ```
 PermitRootLogin yes
 ```
-А тепер потрібно перезапустити sshd, а перезавантаження системи ssh виконується командою
+And now you need to restart sshd and restart ssh system is done by command
 ```
 systemctl restart ssh ||| systemctl restart sshd
 ```
-Або на старих версіях linux
+Or on old versions of linux
 ```
 service ssh restart || service sshd restart
 ```
-Тепер ви можете увійти в систему так, як я написав root.
+Now you can login as I wrote root.
 ```
 ssh root@host
 ```
